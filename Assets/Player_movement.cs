@@ -5,14 +5,18 @@ public class Player_movement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
+    public int maxJumps = 2;
     
 
     private Rigidbody2D player;
     private bool isGrounded = true;
+    private int jumpsRemaining;
+
 
     void Start()
     {
         player = GetComponent<Rigidbody2D>();
+        jumpsRemaining = maxJumps;
     }
 
     void Update()
@@ -35,15 +39,17 @@ public class Player_movement : MonoBehaviour
         player.linearVelocity = new Vector2(moveInput * moveSpeed, player.linearVelocity.y);
 
         // 2. SIMPLE JUMP
-        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && jumpsRemaining > 0)
         {
             player.linearVelocity = new Vector2(player.linearVelocity.x, jumpForce);
-            isGrounded = false;
+            jumpsRemaining--;
+            
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         isGrounded = true;
+        jumpsRemaining = maxJumps;
     }
 }
